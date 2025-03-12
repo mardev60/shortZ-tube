@@ -1,0 +1,19 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>ShortZ</h1>
+    <p class="subtitle">Connectez-vous pour accéder à votre compte</p>
+    
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+    
+    <button 
+      class="google-btn" 
+      (click)="loginWithGoogle()" 
+      [disabled]="loading">
+      <img src="assets/google-icon.svg" alt="Google" class="google-icon">
+      <span *ngIf="!loading">Se connecter avec Google</span>
+      <span *ngIf="loading">Connexion en cours...</span>
+    </button>
+  </div>
+</div> 

@@ -1,0 +1,32 @@
+<div class="dashboard-container">
+  <div *ngIf="loading" class="loading">
+    Chargement...
+  </div>
+  
+  <div *ngIf="!loading && user" class="dashboard-content">
+    <header class="dashboard-header">
+      <div class="logo">ShortZ</div>
+      <div class="user-info">
+        <img *ngIf="user.photoURL" [src]="user.photoURL" alt="Photo de profil" class="avatar">
+        <span class="user-name">{{ user.displayName }}</span>
+        <button class="logout-btn" (click)="logout()">Déconnexion</button>
+      </div>
+    </header>
+    
+    <main class="main-content">
+      <h1>Tableau de bord</h1>
+      <p>Bienvenue, {{ user.displayName }}!</p>
+      <div class="dashboard-card">
+        <h2>Votre compte</h2>
+        <div class="user-details">
+          <div class="detail-item">
+            <strong>Email:</strong> {{ user.email }}
+          </div>
+          <div class="detail-item">
+            <strong>ID:</strong> {{ user.uid }}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div> 
