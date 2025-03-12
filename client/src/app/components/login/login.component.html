@@ -1,19 +1,70 @@
-<div class="login-container">
-  <div class="login-card">
-    <h1>ShortZ</h1>
-    <p class="subtitle">Connectez-vous pour accéder à votre compte</p>
-    
-    <div *ngIf="error" class="error-message">
-      {{ error }}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 p-4">
+  <div class="w-full max-w-md">
+    <!-- Logo et titre -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-bold font-display text-gray-900">ShortZ</h1>
+      <p class="mt-2 text-gray-600">Simplifiez vos liens, amplifiez votre impact</p>
     </div>
-    
-    <button 
-      class="google-btn" 
-      (click)="loginWithGoogle()" 
-      [disabled]="loading">
-      <img src="assets/google-icon.svg" alt="Google" class="google-icon">
-      <span *ngIf="!loading">Se connecter avec Google</span>
-      <span *ngIf="loading">Connexion en cours...</span>
-    </button>
+
+    <!-- Carte de connexion -->
+    <div class="card border border-gray-100">
+      <div class="space-y-6">
+        <!-- Message d'erreur -->
+        <div *ngIf="error" class="p-4 rounded-lg bg-red-50 text-red-600 text-sm">
+          {{ error }}
+        </div>
+
+        <!-- Titre de la carte -->
+        <div class="text-center">
+          <h2 class="text-xl font-semibold text-gray-900">Bienvenue</h2>
+          <p class="mt-1 text-sm text-gray-600">Connectez-vous pour accéder à votre compte</p>
+        </div>
+
+        <!-- Bouton de connexion Google -->
+        <button 
+          (click)="loginWithGoogle()" 
+          [disabled]="loading"
+          class="btn btn-outline w-full flex items-center justify-center space-x-2 group">
+          <img src="assets/google-icon.svg" alt="Google" class="w-5 h-5">
+          <span *ngIf="!loading">Se connecter avec Google</span>
+          <span *ngIf="loading" class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Connexion en cours...
+          </span>
+        </button>
+
+        <!-- Séparateur -->
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-xs">
+            <span class="px-2 bg-white text-gray-500">Ou continuez avec</span>
+          </div>
+        </div>
+
+        <!-- Bouton de connexion anonyme (désactivé pour l'instant) -->
+        <button 
+          class="btn btn-outline w-full opacity-50 cursor-not-allowed"
+          disabled>
+          <span>Continuer en tant qu'invité</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pied de page -->
+    <p class="mt-6 text-center text-xs text-gray-600">
+      En vous connectant, vous acceptez nos 
+      <a href="#" class="text-primary-600 hover:text-primary-500">Conditions d'utilisation</a> et notre 
+      <a href="#" class="text-primary-600 hover:text-primary-500">Politique de confidentialité</a>
+    </p>
   </div>
 </div> 

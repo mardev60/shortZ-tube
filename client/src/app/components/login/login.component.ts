@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styles: []
 })
 export class LoginComponent {
   loading = false;

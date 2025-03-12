@@ -1,38 +1,60 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { User } from 'firebase/auth';
+import { FormsModule } from '@angular/forms';
+
+interface Short {
+  id: number;
+  duration: string;
+  viralScore: number;
+  thumbnail: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
-  user: User | null = null;
-  loading = true;
+export class DashboardComponent {
+  credits = signal(100);
+  isGenerating = signal(false);
+  shorts = signal<Short[]>([]);
+  selectedFile: File | null = null;
+  selectedDuration: string = '30';
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.authService.user$.subscribe(user => {
-      this.user = user;
-      this.loading = false;
-      
-      // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
-      if (!user) {
-        this.router.navigate(['/login']);
-      }
-    });
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('video/')) {
+      this.selectedFile = file;
+    } else {
+      alert('Veuillez sélectionner un fichier vidéo valide');
+    }
   }
 
-  logout(): void {
-    this.authService.logout();
+  generateShorts() {
+    if (this.credits() < 10) {
+      alert('Crédits insuffisants ! Vous avez besoin de 10 VidCoins pour générer des shorts.');
+      return;
+    }
+
+    this.isGenerating.set(true);
+    
+    // Simulation de la génération
+    setTimeout(() => {
+      const generatedShorts: Short[] = Array.from({ length: 10 }, (_, i) => ({
+        id: i + 1,
+        duration: `${this.selectedDuration}s`,
+        viralScore: Math.round(Math.random() * 100),
+        thumbnail: `https://picsum.photos/400/225?random=${i}`
+      }));
+
+      // Trier par score viral
+      generatedShorts.sort((a, b) => b.viralScore - a.viralScore);
+
+      this.shorts.set(generatedShorts);
+      this.credits.update(credits => credits - 10);
+      this.isGenerating.set(false);
+    }, 3000);
   }
 } 
