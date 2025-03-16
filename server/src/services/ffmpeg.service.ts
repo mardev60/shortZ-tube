@@ -152,11 +152,11 @@ export class FfmpegService {
     return moments.map(moment => {
       const duration = moment.endTime - moment.startTime;
       
-      // Si la durée est inférieure au minimum, étendre le segment
+      // Only adjust if duration is below minimum threshold
       if (duration < this.MIN_SEGMENT_DURATION) {
         console.log(`Segment too short (${duration}s), extending to ${this.MIN_SEGMENT_DURATION}s`);
         
-        // Calculer combien ajouter de chaque côté
+        // Calculate how much to add on each side
         const additionalTime = this.MIN_SEGMENT_DURATION - duration;
         const addToStart = additionalTime / 2;
         const addToEnd = additionalTime / 2;
@@ -168,10 +168,8 @@ export class FfmpegService {
         };
       }
       
-      // Si la durée est supérieure au maximum par défaut, réduire le segment
-      // Nous ne faisons pas cette vérification car les segments sont déjà ajustés par le service GPT
-      // et nous voulons respecter la durée demandée par l'utilisateur
-      
+      // For segments within acceptable range, preserve the original boundaries
+      // This respects the speech boundaries identified by GPT
       return moment;
     });
   }
@@ -222,11 +220,12 @@ export class FfmpegService {
     const outputVideoPath = path.join(tempDir, `${shortId}.mp4`);
     const outputThumbnailPath = path.join(tempDir, `${shortId}.jpg`);
     
-    // Calculate duration
+    // Calculate duration - use exact start and end times from the viral moment
     const segmentDuration = moment.endTime - moment.startTime;
     console.log(`Processing segment from ${moment.startTime}s to ${moment.endTime}s (duration: ${segmentDuration}s)`);
     
     // Cut and transform the video to vertical format (9:16 aspect ratio)
+    // Using exact start time and duration from the viral moment to preserve speech boundaries
     await this.cutAndTransformVideo(
       videoPath,
       outputVideoPath,
@@ -234,7 +233,7 @@ export class FfmpegService {
       segmentDuration,
     );
     
-    // Vérifier que le fichier de sortie existe et a une taille
+    // Verify the output file exists and has size
     if (!fs.existsSync(outputVideoPath)) {
       throw new Error(`Output video file does not exist: ${outputVideoPath}`);
     }
@@ -246,7 +245,7 @@ export class FfmpegService {
     
     console.log(`Short video created successfully. File size: ${stats.size} bytes`);
     
-    // Obtenir les métadonnées du fichier vidéo
+
     const videoMetadata = await this.probeVideo(outputVideoPath);
     const videoStream = videoMetadata.streams?.find(s => s.codec_type === 'video');
     

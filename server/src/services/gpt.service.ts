@@ -31,10 +31,8 @@ export class GptService {
     count: number,
   ): Promise<ViralMoment[]> {
     try {
-      // Convert the transcription to a string format for the prompt
-      const stringifiedTranscription = JSON.stringify(transcription);
+      const stringifiedTranscription = JSON.stringify(transcription.segments);
       
-      // Use the PromptService to generate the prompt
       const prompt = this.promptService.createPromptForViralSegments({
         stringifiedTranscription,
         desiredSegmentDuration: `${duration} seconds`,
@@ -91,8 +89,9 @@ export class GptService {
     return moments.map(moment => {
       const currentDuration = moment.endTime - moment.startTime;
       
-      // If the segment is significantly shorter than the target duration, try to extend it
-      if (currentDuration < targetDuration * 0.8) {
+      const lowerThreshold = targetDuration * 0.85;
+      
+      if (currentDuration < lowerThreshold) {
         console.log(`Segment too short (${currentDuration}s), extending to target ${targetDuration}s`);
         
         // Calculate how much to add on each side

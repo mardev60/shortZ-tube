@@ -57,9 +57,13 @@ export class AppService {
       console.log('Transcription:', transcription);
 
       // Step 3: Use GPT to analyze transcription and identify viral moments
+      // allow for flexible durations (±15%) to respect complete speech segments
+      const requestedDuration = parseInt(duration);
+      console.log(`Requested duration: ${requestedDuration} seconds (with flexibility for speech boundaries)`);
+      
       const viralMoments = await this.gptService.identifyViralMoments(
         transcription,
-        parseInt(duration),
+        requestedDuration,
         5, // Number of shorts to generate
       );
 
